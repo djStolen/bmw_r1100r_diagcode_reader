@@ -22,12 +22,14 @@ An Arduino-based digital pulse code reader designed specifically for the 1996 BM
 
 > ⚠️ **CRUCIAL:** You must use the voltage divider resistors below to protect the Arduino's input pins from the bike's 12V–14V environment. Connecting Pin 1 directly to the Nano will destroy the chip.
 
+```bash
 [ R1100R Bike Plug ]                  [ Diagnostic Box Layout ]
    Pin 1 (Signal)     ──────┬──────────> Trigger Button (Leg A)
                             └─[10kΩ]───> Arduino Pin D2
                                   ├──┬─> [4.7kΩ] ──> Arduino GND
                                   └──
    Pin 3 (Ground)     ─────────────────> Trigger Button (Leg B) & Arduino GND
+```
 
 ### Component Connections:
 * **Reset Button:** Connected between Arduino **Pin D3** and **GND**.
