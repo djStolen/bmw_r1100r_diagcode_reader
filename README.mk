@@ -52,3 +52,4 @@ This project requires the **TM1637Display** library by Avishay Orpaz. Install it
 If you encounter permission issues when uploading to your CH340 board via `/dev/ttyUSB0`, grant serial write access to your user profile:
 ```bash
 sudo usermod -a -G dialout $USER
+```
