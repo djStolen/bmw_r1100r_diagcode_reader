@@ -10,7 +10,14 @@ const int testCodes[TOTAL_CODES][4] = {
   {2, 3, 4, 2}, {4, 4, 4, 4}, {0, 0, 0, 0}
 };
 
+// Heartbeat variables
+const int HEARTBEAT_LED = 13;        // Onboard LED on Arduino Nano
+unsigned long lastHeartbeatTime = 0; 
+const long heartbeatInterval = 2000;  // Blink every 2000ms
+bool ledState = LOW;
+
 void setup() {
+  pinMode(HEARTBEAT_LED, OUTPUT);
   pinMode(OUTPUT_PIN, OUTPUT);
   pinMode(TRIGGER_PIN, INPUT_PULLUP);
   digitalWrite(OUTPUT_PIN, HIGH); // Default open collector pullup status 
@@ -34,7 +41,20 @@ void sendCode(const int code[4]) {
   }
 }
 
+void heartbeat() {
+  // --- NON-BLOCKING HEARTBEAT ---
+  unsigned long currentMillis = millis();
+  if (currentMillis - lastHeartbeatTime >= heartbeatInterval) {
+    lastHeartbeatTime = currentMillis;
+    ledState = !ledState; // Toggle the LED state
+    digitalWrite(HEARTBEAT_LED, ledState);
+  }
+  // ------------------------------
+}
+
 void loop() {
+  heartbeat();
+
   if (digitalRead(TRIGGER_PIN) == LOW) {
     unsigned long pressStart = millis();
     while (digitalRead(TRIGGER_PIN) == LOW) { delay(10); }
