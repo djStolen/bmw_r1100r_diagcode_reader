@@ -2,26 +2,24 @@
     "name": "Arduino Nano Ubuntu Dev Environment",
     "dockerFile": "Dockerfile",
     
-    // Add useful VS Code extensions for Arduino development
     "customizations": {
         "vscode": {
             "extensions": [
                 "vsciot-vscode.vscode-arduino",
                 "ms-vscode.cpptools",
-                "twxs.cmake",
-                "lintangwisesa.arduino"
+                "lintangwisesa.arduino",
+                "twxs.cmake"
             ]
         }
     },
 
-    // CRITICAL FOR HARDWARE: Grants the container permission to access USB serial ports
     "runArgs": [
         "--privileged",
         "-v", "/dev:/dev",
-        "-v", "${localEnv:HOME}/.ssh:/root/.ssh:ro"
+        // Mounts host SSH keys straight into the new 'ubuntu' user home space
+        "-v", "${localEnv:HOME}/.ssh:/home/ubuntu/.ssh"
     ],
 
-    // Ensures the workspace files are owned by the container user if needed
-    "remoteUser": "root"
+    // SWITCH HERE: Stop using root, use the standard ubuntu user
+    "remoteUser": "ubuntu"
 }
-
