@@ -32,6 +32,50 @@ An Arduino-based digital pulse code reader designed specifically for the 1996 BM
 ```
 
 ### Component Connections:
+
+```mermaid
+graph TD
+    subgraph "Simulator Nano (ECU Emulator)"
+        S_GND[GND]
+        S_D4[Pin D4: Signal Out]
+        S_D2[Pin D2: Trigger]
+        S_BTN((Reset/Trigger Button))
+    end
+
+    subgraph "Reader Nano (Decoder)"
+        R_GND[GND]
+        R_D2[Pin D2: Signal In]
+        R_D3[Pin D3: Reset Button]
+        R_CLK[Pin D6: CLK]
+        R_DIO[Pin D5: DIO]
+        R_VCC[5V]
+    end
+
+    subgraph "Display"
+        DISP_VCC[VCC]
+        DISP_GND[GND]
+        DISP_CLK[CLK]
+        DISP_DIO[DIO]
+    end
+
+    %% Connections
+    S_GND --- R_GND
+    S_D4 --> R_D2
+    S_D2 --- S_BTN
+    S_BTN --- S_GND
+    
+    R_VCC --> DISP_VCC
+    R_GND --> DISP_GND
+    R_CLK --> DISP_CLK
+    R_DIO --> DISP_DIO
+
+    %% Styling
+    style S_D4 fill:#f96,stroke:#333,color:#000
+    style R_D2 fill:#f96,stroke:#333,color:#000
+    style R_CLK fill:#005c99,stroke:#333,color:#fff
+    style R_DIO fill:#005c99,stroke:#333,color:#fff
+```
+
 * **Reset Button:** Connected between Arduino **Pin D3** and **GND**.
 * **TM1637 Display:** CLK ──> **D6** | DIO ──> **D5** | VCC ──> **5V** | GND ──> **GND**.
 
