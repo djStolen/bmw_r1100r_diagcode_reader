@@ -13,6 +13,7 @@ RUN apt-get update && apt-get install -y \
     xz-utils \
     libncurses5 \
     sudo \
+    picocom \
     && rm -rf /var/lib/apt/lists/*
 
 # Explicitly create the 'ubuntu' user with a home directory and bash shell
