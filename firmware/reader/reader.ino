@@ -16,8 +16,14 @@ const long heartbeatInterval = 500;  // Blink every 500ms
 bool ledState = LOW;
 
 void setup() {
+  // Initialize TTY / Serial Output
+  Serial.begin(115200);
+  Serial.println("====================================");
+  Serial.println("BMW R1100R Motronic Code Reader v1.0");
+  Serial.println("====================================");
+
   pinMode(HEARTBEAT_LED, OUTPUT);
-  pinMode(SIGNAL_PIN, INPUT);
+  pinMode(SIGNAL_PIN, INPUT_PULLUP);
   pinMode(RESET_BTN, INPUT_PULLUP);
   attachInterrupt(digitalPinToInterrupt(SIGNAL_PIN), handleInterrupt, FALLING);
   
@@ -33,6 +39,9 @@ void localReset() {
   decoder.reset();
   uint8_t readyPattern[] = { 0x40, 0x40, 0x40, 0x40 }; // ----
   display.setSegments(readyPattern);
+  
+  // Log the reset event to the TTY
+  Serial.println("\n[SYSTEM] Ready. Waiting for ECU pulses...");
 }
 
 void loop() {
@@ -40,13 +49,29 @@ void loop() {
   unsigned long currentMillis = millis();
   if (currentMillis - lastHeartbeatTime >= heartbeatInterval) {
     lastHeartbeatTime = currentMillis;
-    ledState = !ledState; // Toggle the LED state
+    ledState = !ledState; 
     digitalWrite(HEARTBEAT_LED, ledState);
   }
   // ------------------------------
+  
   // Poll time delta progressions 
   if (decoder.checkTimeout(millis())) {
-    display.showNumberDec(decoder.getLatestCode(), true);
+    int fetchedCode = decoder.getLatestCode();
+    
+    // Update the physical 7-segment display
+    display.showNumberDec(fetchedCode, true);
+    
+    // Print the formatted code to the TTY
+    Serial.print("[DECODED] Fault Code: ");
+    
+    // Handle edge case where code 0000 might print as just "0"
+    if (fetchedCode == 0) {
+      Serial.println("0000 (End of Sequence)");
+    } else if (fetchedCode == 4444) {
+      Serial.println("4444 (No Faults Stored)");
+    } else {
+      Serial.println(fetchedCode);
+    }
   }
 
   // Handle local user resets
@@ -55,4 +80,3 @@ void loop() {
     delay(400); // Debounce physical push button action
   }
 }
-
