@@ -99,3 +99,32 @@ If you encounter permission issues when uploading to your CH340 board via `/dev/
 ```bash
 sudo usermod -a -G dialout $USER
 ```
+---
+## Debugging
+### TTY
+
+Both Reader and Simulator are printing the codes in a similar fashion, which can be read out if connected via data-cable:
+
+```sh
+====================================
+BMW R1100R Motronic Simulator v1.1
+====================================
+[SYSTEM] Ready. Waiting for 5s trigger...
+
+[TRIGGER] 5s hold detected. Starting sequence...
+[TRANSMITTING] Code: 1122
+[TRANSMITTING] Code: 1133
+[TRANSMITTING] Code: 1215
+[TRANSMITTING] Code: 1223
+[TRANSMITTING] Code: 1224
+[TRANSMITTING] Code: 2341
+[TRANSMITTING] Code: 2342
+[TRANSMITTING] Code: 4444
+[TRANSMITTING] Code: 0000
+[SYSTEM] Sequence complete. Standby.
+```
+
+e.g.:
+```sh
+picocom -b 115200 /dev/ttyUSB0
+```
